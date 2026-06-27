@@ -105,7 +105,7 @@ const localeCopy = {
     rescan: "Run scan",
     lastScan: "Last scan",
     notReady: "Not event-ready yet",
-    readyToDemo: "Ready for a local demo",
+    readyToDemo: "Ready for demo",
     currentTruth: "Current truth",
     runEvidence: "Evidence",
     nextAction: "Next action",
@@ -455,7 +455,7 @@ const localeCopy = {
       geminiConfigured: "Gemini API configured",
       geminiConfiguredDetail: "Google Cloud / Enterprise or API key active",
       fallbackMode: "Fallback mode",
-      translationReviewed: "Translation reviewed",
+      translationReviewed: "Translation",
       translationReviewedDetail: "Reviewed by Gemini",
       translationFallback: "Unverified fallback",
       liveCloudRunUrl: "Live Cloud Run URL",
@@ -498,7 +498,7 @@ const localeCopy = {
     rescan: "スキャン実行",
     lastScan: "最終スキャン",
     notReady: "イベント準備は未完了",
-    readyToDemo: "ローカルデモ可能",
+    readyToDemo: "デモ可能",
     currentTruth: "現在の事実",
     runEvidence: "根拠",
     nextAction: "次のアクション",
@@ -848,7 +848,7 @@ const localeCopy = {
       geminiConfigured: "Gemini API 設定済み",
       geminiConfiguredDetail: "Google Cloud / Enterprise または API キーが有効",
       fallbackMode: "フォールバックモード",
-      translationReviewed: "翻訳レビュー済み",
+      translationReviewed: "翻訳",
       translationReviewedDetail: "Gemini によるレビュー済み",
       translationFallback: "未検証フォールバック",
       liveCloudRunUrl: "有効な Cloud Run URL",
@@ -891,7 +891,7 @@ const localeCopy = {
     rescan: "运行体检",
     lastScan: "最后扫描",
     notReady: "尚未达到活动级完成",
-    readyToDemo: "可本地演示",
+    readyToDemo: "可演示",
     currentTruth: "当前真实状态",
     runEvidence: "证据",
     nextAction: "下一步",
@@ -1241,7 +1241,7 @@ const localeCopy = {
       geminiConfigured: "Gemini API 已配置",
       geminiConfiguredDetail: "Google Cloud / Enterprise 或 API key 已启用",
       fallbackMode: "Fallback 模式",
-      translationReviewed: "翻译已审核",
+      translationReviewed: "翻译",
       translationReviewedDetail: "Gemini 已审核",
       translationFallback: "未验证 fallback",
       liveCloudRunUrl: "线上 Cloud Run URL",
@@ -1338,6 +1338,18 @@ function metricTone(value: number | null, warningAt: number, dangerAt: number): 
 
 function getArea(report: ScanReport, name: string) {
   return report.areas.find((area) => area.name === name);
+}
+
+function getSourceDisplayLabel(report: ScanReport, copy: typeof localeCopy.en) {
+  if (report.source.type === "githubUrl") {
+    return report.source.label;
+  }
+
+  if (report.source.type === "serverWorkspace") {
+    return copy.sourceServerPlaceholder;
+  }
+
+  return copy.sourceLocal;
 }
 
 function getMetaphorProfile(theme: AnalogyStyle, copy: typeof localeCopy.en) {
@@ -1464,6 +1476,7 @@ type AnalogyPoster = {
 
 function buildAnalogyPoster(report: ScanReport, identity: Identity, theme: AnalogyStyle, copy: typeof localeCopy.en): AnalogyPoster {
   const layers = buildAnalogyLayers(report, theme, copy);
+  const sourceLabel = getSourceDisplayLabel(report, copy);
   return {
     title: `${copy.identities[identity]} x ${copy.analogies[theme]}`,
     subtitle: report.project.goal,
@@ -1472,7 +1485,7 @@ function buildAnalogyPoster(report: ScanReport, identity: Identity, theme: Analo
     evidenceLabel: copy.analogyUi.evidenceLabel,
     audience: copy.identities[identity],
     object: copy.analogies[theme],
-    source: report.source.url || report.source.label,
+    source: report.source.url || sourceLabel,
     stats: `${report.inventory.files.toLocaleString()} ${copy.files} / ${report.inventory.lines.toLocaleString()} ${copy.lines}`,
     nodes: layers.map((layer) => ({
       label: layer.label,
@@ -1750,8 +1763,14 @@ export default function App() {
 
   const projectReady = useMemo(() => {
     if (!scanReport) return false;
-    return scanReport.completion.product >= 70 && scanReport.completion.evidenceConfidence >= 60;
-  }, [scanReport]);
+    return (
+      scanReport.completion.product >= 70 &&
+      scanReport.completion.evidenceConfidence >= 60 &&
+      geminiConfigured &&
+      translationReviewed &&
+      scanReport.deployment.verified
+    );
+  }, [geminiConfigured, scanReport, translationReviewed]);
 
   const topGaps = useMemo(() => {
     if (!scanReport) return [];
@@ -2093,6 +2112,7 @@ function OverviewPanel({
 }) {
   const qaArea = getArea(report, "Quality Assurance (Tests)");
   const cloudArea = getArea(report, "Cloud Run Readiness");
+  const sourceLabel = getSourceDisplayLabel(report, copy);
 
   return (
     <Stack spacing={2.5}>
@@ -2129,7 +2149,7 @@ function OverviewPanel({
           />
           <Chip
             icon={report.source.type === "githubUrl" ? <GitHubIcon /> : <SearchIcon />}
-            label={`${copy.scanSource}: ${report.source.label}`}
+            label={`${copy.scanSource}: ${sourceLabel}`}
             color={report.source.type === "githubUrl" ? "success" : "default"}
             variant="outlined"
             sx={{ maxWidth: "100%" }}
@@ -2340,6 +2360,7 @@ function ProjectScanPanel({
   ];
 
   const largestLanguage = Math.max(...report.inventory.languages.map((language) => language.lines), 1);
+  const sourceLabel = getSourceDisplayLabel(report, copy);
 
   return (
     <Stack spacing={2.5}>
@@ -2350,7 +2371,7 @@ function ProjectScanPanel({
           <Stack direction={{ xs: "column", md: "row" }} spacing={1.5} alignItems={{ md: "center" }} justifyContent="space-between">
             <Box sx={{ minWidth: 0 }}>
               <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                {copy.scanSource}: {report.source.label}
+                {copy.scanSource}: {sourceLabel}
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ overflowWrap: "anywhere" }}>
                 {report.source.url || report.source.path}
@@ -3042,6 +3063,7 @@ function AnalogyImageCard({
 }) {
   const poster = buildAnalogyPoster(report, identity, analogyTheme, copy);
   const svgMarkup = buildAnalogyPosterSvg(poster);
+  const sourceLabel = getSourceDisplayLabel(report, copy);
 
   function downloadSvg() {
     const blob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
@@ -3093,7 +3115,7 @@ function AnalogyImageCard({
         </Box>
 
         <Stack direction={{ xs: "column", sm: "row" }} spacing={1} sx={{ mt: 1.5 }} flexWrap="wrap" useFlexGap>
-          <Chip size="small" label={`${copy.imageEvidence}: ${report.source.label}`} variant="outlined" />
+          <Chip size="small" label={`${copy.imageEvidence}: ${sourceLabel}`} variant="outlined" />
           <Chip size="small" label={poster.stats} variant="outlined" />
           <Chip size="small" label={`${copy.analogies[analogyTheme]} / ${copy.identities[identity]}`} color="secondary" variant="outlined" />
         </Stack>
@@ -3305,6 +3327,7 @@ function LaunchPanel({
   copyText: (value: string, message?: string) => Promise<void>;
 }) {
   const deployment = report.deployment;
+  const sourceLabel = getSourceDisplayLabel(report, copy);
 
   return (
     <Stack spacing={2.5}>
@@ -3354,7 +3377,7 @@ function LaunchPanel({
                 <FactLine label={copy.publicUrl} value={deployment.url || copy.notSet} />
                 <FactLine label={copy.service} value={deployment.service || copy.notDetected} />
                 <FactLine label={copy.revision} value={deployment.revision || copy.notDetected} />
-                <FactLine label={copy.scanSource} value={report.source.url || report.source.label} />
+                <FactLine label={copy.scanSource} value={report.source.url || sourceLabel} />
                 <FactLine label={copy.deployChecks.hostedSourceSnapshot} value={deployment.sourcePath} />
                 {report.source.warnings.length > 0 && (
                   <Alert severity="info" sx={{ mt: 2 }}>
@@ -3471,6 +3494,7 @@ function DeployPanel({
 }) {
   const cloudArea = getArea(report, "Cloud Run Readiness");
   const deployment = report.deployment;
+  const sourceLabel = getSourceDisplayLabel(report, copy);
   const checks = [
     { label: copy.deployChecks.fastifyPort, done: true, detail: copy.deployChecks.fastifyPortDetail },
     { label: copy.deployChecks.viteServed, done: true, detail: copy.deployChecks.viteServedDetail },
@@ -3482,7 +3506,7 @@ function DeployPanel({
     {
       label: copy.deployChecks.cloudSafeInput,
       done: report.source.type === "githubUrl" || deployment.sourcePath.includes("/workspace-source"),
-      detail: report.source.type === "githubUrl" ? `${report.source.label}: ${report.source.url}` : deployment.sourcePath,
+      detail: report.source.type === "githubUrl" ? `${sourceLabel}: ${report.source.url}` : `${sourceLabel}: ${deployment.sourcePath}`,
     },
   ];
 
