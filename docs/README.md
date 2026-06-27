@@ -8,8 +8,9 @@ This directory keeps the durable product, engineering, deployment, and architect
 2. `docs/product/ui-layout-brief.md`
 3. `docs/engineering/stack-boundaries.md`
 4. `docs/engineering/report-schema.md`
-5. `docs/agent/operating-model.md`
-6. `docs/deploy/cloud-run.md`
+5. `docs/engineering/quality-maintenance.md`
+6. `docs/agent/operating-model.md`
+7. `docs/deploy/cloud-run.md`
 
 Optional context:
 

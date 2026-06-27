@@ -348,9 +348,8 @@ export async function runScan(targetPath: string, sourceInfo?: Partial<ScanSourc
   if (!geminiActive) {
     productScore -= 20;
     gaps.push("Gemini API is in fallback mode (missing API key)");
-  }
-  // Translation status unverified
-  if (!geminiActive) {
+    // This is a separate product promise from generation: fallback analogies can
+    // still render, but the three-language copy review is not verified.
     productScore -= 15;
     gaps.push("Multilingual translations are unverified (requires Gemini review)");
   }

@@ -9,7 +9,7 @@
     "dev": "concurrently \"npm run dev -w @spec-compass/api\" \"npm run dev -w @spec-compass/web\"",
     "build": "npm run build -w @spec-compass/shared && npm run build -w @spec-compass/web && npm run build -w @spec-compass/api",
     "start": "npm run start -w @spec-compass/api",
-    "test": "npm run build -w @spec-compass/shared && vitest run",
+    "test": "npm run test -w @spec-compass/shared && npm run test -w @spec-compass/api",
     "test:watch": "vitest"
   },
   "devDependencies": {

@@ -15,11 +15,13 @@
     "@types/adm-zip": "^0.5.8",
     "@types/node": "^20.14.9",
     "tsx": "^4.15.7",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "vitest": "^2.1.9"
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
+    "test": "npm run build -w @spec-compass/shared && vitest run src",
     "start": "node dist/index.js"
   }
 }

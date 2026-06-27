@@ -136,6 +136,229 @@ const EMPTY_EXPLANATION_COPY: Record<Locale, string> = {
   "zh-CN": "未生成解释。",
 };
 
+type SupportedAnalogy = "bicycle" | "house" | "plant" | "human body";
+
+const ANALOGY_NAMES: Record<SupportedAnalogy, Record<Locale, string>> = {
+  bicycle: { en: "bicycle", ja: "自転車", "zh-CN": "自行车" },
+  house: { en: "house", ja: "家", "zh-CN": "房子" },
+  plant: { en: "plant", ja: "植物", "zh-CN": "植物" },
+  "human body": { en: "human body", ja: "人体", "zh-CN": "人体" },
+};
+
+const NO_SIGNAL_COPY: Record<Locale, string> = {
+  en: "none",
+  ja: "なし",
+  "zh-CN": "未检测到",
+};
+
+type FallbackVocabularyTemplate = {
+  term: string;
+  job: string;
+  role: (analogyName: string) => string;
+  evidence: (report: ScanReport) => string;
+};
+
+const fallbackList = (items: string[], locale: Locale) => items.join(", ") || NO_SIGNAL_COPY[locale];
+
+const FALLBACK_VOCABULARY: Record<Locale, FallbackVocabularyTemplate[]> = {
+  en: [
+    {
+      term: "TypeScript",
+      job: "Gives code variables strict types so programming mistakes are caught earlier.",
+      role: (analogyName) => `The blueprint measurements in the ${analogyName}.`,
+      evidence: (report) => `Language scan includes: ${fallbackList(report.inventory.languages.map((language) => language.name), "en")}.`,
+    },
+    {
+      term: "React",
+      job: "Creates interactive browser interfaces that users can see and operate.",
+      role: (analogyName) => `The user-facing surface of the ${analogyName}.`,
+      evidence: (report) => `Frontend stack detected: ${fallbackList(report.detectedStack.frontend, "en")}.`,
+    },
+    {
+      term: "Material UI (MUI)",
+      job: "Provides polished Material Design components for the React interface.",
+      role: (analogyName) => `The standardized fittings and controls in the ${analogyName}.`,
+      evidence: (report) => `Frontend stack detected: ${fallbackList(report.detectedStack.frontend, "en")}.`,
+    },
+    {
+      term: "Node.js",
+      job: "Runs the server-side JavaScript and TypeScript code.",
+      role: (analogyName) => `The engine room that keeps the ${analogyName} operating.`,
+      evidence: (report) => `Backend stack detected: ${fallbackList(report.detectedStack.backend, "en")}.`,
+    },
+    {
+      term: "Fastify",
+      job: "Handles API requests with a focused, low-overhead backend server.",
+      role: (analogyName) => `The request desk inside the ${analogyName}.`,
+      evidence: (report) => `Backend stack detected: ${fallbackList(report.detectedStack.backend, "en")}.`,
+    },
+    {
+      term: "Zod",
+      job: "Checks whether incoming data matches the expected schema before it is trusted.",
+      role: (analogyName) => `The inspection checklist for the ${analogyName}.`,
+      evidence: (report) => `Data stack detected: ${fallbackList(report.detectedStack.data, "en")}.`,
+    },
+    {
+      term: "Gemini API",
+      job: "Generates and reviews analogy explanations when Google AI access is configured.",
+      role: (analogyName) => `The reasoning assistant that explains the ${analogyName}.`,
+      evidence: (report) => `Data stack detected: ${fallbackList(report.detectedStack.data, "en")}.`,
+    },
+    {
+      term: "Cloud Run",
+      job: "Runs the web app and API as a deployable Google Cloud service.",
+      role: (analogyName) => `The public address where the ${analogyName} can be used by others.`,
+      evidence: (report) => `Deployment stack detected: ${fallbackList(report.detectedStack.deploy, "en")}.`,
+    },
+    {
+      term: "Tests",
+      job: "Check core behavior repeatedly so agents cannot only claim that work is done.",
+      role: (analogyName) => `The safety inspection before the ${analogyName} is handed over.`,
+      evidence: (report) => `Test stack detected: ${fallbackList(report.detectedStack.test, "en")}.`,
+    },
+    {
+      term: "Git",
+      job: "Records file changes over time so the project baseline can be reviewed.",
+      role: (analogyName) => `The maintenance log for the ${analogyName}.`,
+      evidence: (report) => `Git status reports branch ${report.git.branch}; has commits: ${report.git.hasCommits ? "yes" : "no"}.`,
+    },
+  ],
+  ja: [
+    {
+      term: "TypeScript",
+      job: "コード変数に厳密な型を付け、プログラミングミスを早期に見つけます。",
+      role: (analogyName) => `${analogyName}における設計図の寸法です。`,
+      evidence: (report) => `言語スキャン: ${fallbackList(report.inventory.languages.map((language) => language.name), "ja")}。`,
+    },
+    {
+      term: "React",
+      job: "ユーザーが見て操作するブラウザー画面を作ります。",
+      role: (analogyName) => `${analogyName}の利用者に見える表面です。`,
+      evidence: (report) => `フロントエンド検出結果: ${fallbackList(report.detectedStack.frontend, "ja")}。`,
+    },
+    {
+      term: "Material UI (MUI)",
+      job: "React 画面に整った Material Design コンポーネントを提供します。",
+      role: (analogyName) => `${analogyName}の標準化された設備や操作部品です。`,
+      evidence: (report) => `フロントエンド検出結果: ${fallbackList(report.detectedStack.frontend, "ja")}。`,
+    },
+    {
+      term: "Node.js",
+      job: "サーバー側の JavaScript / TypeScript コードを動かします。",
+      role: (analogyName) => `${analogyName}を動かし続ける機械室です。`,
+      evidence: (report) => `バックエンド検出結果: ${fallbackList(report.detectedStack.backend, "ja")}。`,
+    },
+    {
+      term: "Fastify",
+      job: "軽量なバックエンドサーバーとして API リクエストを処理します。",
+      role: (analogyName) => `${analogyName}の中にある受付窓口です。`,
+      evidence: (report) => `バックエンド検出結果: ${fallbackList(report.detectedStack.backend, "ja")}。`,
+    },
+    {
+      term: "Zod",
+      job: "入力データが期待されたスキーマに合っているか確認します。",
+      role: (analogyName) => `${analogyName}の点検チェックリストです。`,
+      evidence: (report) => `データ層検出結果: ${fallbackList(report.detectedStack.data, "ja")}。`,
+    },
+    {
+      term: "Gemini API",
+      job: "Google AI の設定が有効なとき、類比説明の生成とレビューを行います。",
+      role: (analogyName) => `${analogyName}を説明する推論アシスタントです。`,
+      evidence: (report) => `データ層検出結果: ${fallbackList(report.detectedStack.data, "ja")}。`,
+    },
+    {
+      term: "Cloud Run",
+      job: "Web アプリと API を Google Cloud 上のサービスとして実行します。",
+      role: (analogyName) => `${analogyName}を他の人が使える公開住所です。`,
+      evidence: (report) => `デプロイ検出結果: ${fallbackList(report.detectedStack.deploy, "ja")}。`,
+    },
+    {
+      term: "Tests",
+      job: "主要な動作を繰り返し確認し、エージェントの完了主張だけに頼らないようにします。",
+      role: (analogyName) => `${analogyName}を引き渡す前の安全点検です。`,
+      evidence: (report) => `テスト検出結果: ${fallbackList(report.detectedStack.test, "ja")}。`,
+    },
+    {
+      term: "Git",
+      job: "ファイル変更の履歴を記録し、プロジェクトの基準点を確認できるようにします。",
+      role: (analogyName) => `${analogyName}の保守記録です。`,
+      evidence: (report) => `Git ブランチは ${report.git.branch}、コミットあり: ${report.git.hasCommits ? "はい" : "いいえ"}。`,
+    },
+  ],
+  "zh-CN": [
+    {
+      term: "TypeScript",
+      job: "给代码变量加上严格类型，尽早发现编程错误。",
+      role: (analogyName) => `${analogyName}里的蓝图尺寸。`,
+      evidence: (report) => `语言扫描结果: ${fallbackList(report.inventory.languages.map((language) => language.name), "zh-CN")}。`,
+    },
+    {
+      term: "React",
+      job: "创建用户能看到、能操作的浏览器界面。",
+      role: (analogyName) => `${analogyName}面向使用者的外观和操作面。`,
+      evidence: (report) => `前端技术栈检测结果: ${fallbackList(report.detectedStack.frontend, "zh-CN")}。`,
+    },
+    {
+      term: "Material UI (MUI)",
+      job: "为 React 界面提供成熟的 Material Design 组件。",
+      role: (analogyName) => `${analogyName}里的标准化设施和控制件。`,
+      evidence: (report) => `前端技术栈检测结果: ${fallbackList(report.detectedStack.frontend, "zh-CN")}。`,
+    },
+    {
+      term: "Node.js",
+      job: "运行服务端的 JavaScript / TypeScript 代码。",
+      role: (analogyName) => `让${analogyName}持续运转的机房。`,
+      evidence: (report) => `后端技术栈检测结果: ${fallbackList(report.detectedStack.backend, "zh-CN")}。`,
+    },
+    {
+      term: "Fastify",
+      job: "用轻量后端服务器处理 API 请求。",
+      role: (analogyName) => `${analogyName}里的请求接待台。`,
+      evidence: (report) => `后端技术栈检测结果: ${fallbackList(report.detectedStack.backend, "zh-CN")}。`,
+    },
+    {
+      term: "Zod",
+      job: "检查输入数据是否符合预期 schema，再决定是否可信。",
+      role: (analogyName) => `${analogyName}的验收清单。`,
+      evidence: (report) => `数据层检测结果: ${fallbackList(report.detectedStack.data, "zh-CN")}。`,
+    },
+    {
+      term: "Gemini API",
+      job: "当 Google AI 访问配置完成后，用来生成并审核类比解释。",
+      role: (analogyName) => `负责解释${analogyName}的推理助手。`,
+      evidence: (report) => `数据层检测结果: ${fallbackList(report.detectedStack.data, "zh-CN")}。`,
+    },
+    {
+      term: "Cloud Run",
+      job: "把 Web 应用和 API 作为 Google Cloud 服务运行起来。",
+      role: (analogyName) => `让别人能访问${analogyName}的公开地址。`,
+      evidence: (report) => `部署技术栈检测结果: ${fallbackList(report.detectedStack.deploy, "zh-CN")}。`,
+    },
+    {
+      term: "Tests",
+      job: "反复检查核心行为，避免只相信 agent 的口头完成声明。",
+      role: (analogyName) => `${analogyName}交付前的安全检查。`,
+      evidence: (report) => `测试技术栈检测结果: ${fallbackList(report.detectedStack.test, "zh-CN")}。`,
+    },
+    {
+      term: "Git",
+      job: "记录文件随时间发生的变化，让项目基线可以被审查。",
+      role: (analogyName) => `${analogyName}的维修记录。`,
+      evidence: (report) => `Git 状态显示分支 ${report.git.branch}；是否已有提交: ${report.git.hasCommits ? "是" : "否"}。`,
+    },
+  ],
+};
+
+function buildFallbackVocabulary(report: ScanReport, analogy: SupportedAnalogy, locale: Locale): AnalogyResponse["vocabulary"] {
+  const analogyName = ANALOGY_NAMES[analogy][locale];
+  return FALLBACK_VOCABULARY[locale].map((row) => ({
+    term: row.term,
+    job: row.job,
+    role: row.role(analogyName),
+    evidence: row.evidence(report),
+  }));
+}
+
 export function isGeminiConfigured(): boolean {
   return Boolean(ai);
 }
@@ -381,10 +604,10 @@ Instructions:
   }
 }
 
-function getFallbackAnalogy(
+export function getFallbackAnalogy(
   report: ScanReport,
   identity: string,
-  analogy: string,
+  analogy: SupportedAnalogy,
   locale: Locale = "en"
 ): AnalogyResponse {
   const branch = report.git.branch;
@@ -418,7 +641,7 @@ function getFallbackAnalogy(
       contract: "DNA-like instructions and immune checks",
       deploy: "body operating in the real environment",
     },
-  }[analogy as "bicycle" | "house" | "plant" | "human body"];
+  }[analogy];
 
   const explanation = `${labels.claim}: The frontend framework is the part users directly experience.
 ${labels.analogy}: For a ${identity}, React and MUI are like the ${metaphor.ui} of a ${analogy}: people judge the product through what they can see, touch, and operate.
@@ -457,44 +680,7 @@ ${labels.nextAction}: Deploy only after build, API smoke tests, and static asset
   Deploy[Cloud Run / ${metaphor.deploy}] --> UI
   Deploy --> API`;
 
-  const vocabulary = [
-    {
-      term: "TypeScript",
-      job: "Ensures code variables have strict types to catch programming mistakes early.",
-      role: `The blueprint measurements in our ${analogy}.`,
-      evidence: "TypeScript compiler and compiler options found."
-    },
-    {
-      term: "React",
-      job: "Creates interactive, dynamic user interfaces for browsers.",
-      role: `The customer-facing facade of our ${analogy}.`,
-      evidence: "React package declared as dependency."
-    },
-    {
-      term: "Material UI (MUI)",
-      job: "A Material Design-inspired component library for building polished React interfaces.",
-      role: `The standardized furniture and trim in our ${analogy}.`,
-      evidence: "MUI packages found in package.json."
-    },
-    {
-      term: "Fastify",
-      job: "A highly efficient, low-overhead Node.js backend server framework.",
-      role: `The central workflow operator in our ${analogy}.`,
-      evidence: "Fastify declared in apps/api dependencies."
-    },
-    {
-      term: "Zod",
-      job: "Validates that input data matches the expected schema formats.",
-      role: `The inspector checking dimensions in our ${analogy}.`,
-      evidence: "Zod schemas configured in packages/shared."
-    },
-    {
-      term: "Git",
-      job: "Tracks changes in project files over time, letting teams coordinate code safely.",
-      role: `The build registry in our ${analogy}.`,
-      evidence: `Git status reports repository present on branch ${branch}.`
-    }
-  ];
+  const vocabulary = buildFallbackVocabulary(report, analogy, locale);
 
   return {
     explanation,

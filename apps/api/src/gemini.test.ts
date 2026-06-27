@@ -1,5 +1,70 @@
 import { describe, expect, it } from "vitest";
-import { normalizeAnalogyResponse } from "./gemini.js";
+import type { ScanReport } from "@spec-compass/shared";
+import { getFallbackAnalogy, normalizeAnalogyResponse } from "./gemini.js";
+
+const fallbackReport: ScanReport = {
+  project: {
+    name: "demo",
+    goal: "Explain scanner evidence",
+    targetUsers: ["founders", "engineers"],
+  },
+  detectedStack: {
+    frontend: ["React", "Material UI (MUI)", "React TSX"],
+    backend: ["Fastify", "Node.js Service"],
+    network: ["HTTP/REST APIs"],
+    database: ["None / In-Memory"],
+    data: ["Zod Schema", "Gemini GenAI SDK"],
+    deploy: ["Docker", "Cloud Run"],
+    test: ["Vitest"],
+  },
+  git: {
+    isRepository: true,
+    branch: "main",
+    hasCommits: true,
+    latestCommit: "abc1234",
+    isDirty: false,
+    untrackedCount: 0,
+    statusSummary: [],
+    evidence: ["git status --short"],
+  },
+  inventory: {
+    files: 12,
+    lines: 345,
+    languages: [{ name: "TypeScript", lines: 345 }],
+    keyDirectories: [{ path: "apps/api", purpose: "Fastify API" }],
+  },
+  completion: {
+    product: 90,
+    engineering: 95,
+    evidenceConfidence: 88,
+  },
+  source: {
+    type: "localPath",
+    label: "Local demo project",
+    url: null,
+    path: "/tmp/demo",
+    evidence: ["Local path selected"],
+    warnings: [],
+  },
+  deployment: {
+    environment: "cloudRun",
+    verified: true,
+    service: "spec-compass",
+    revision: "spec-compass-00001",
+    region: "asia-northeast1",
+    url: "https://example.run.app",
+    sourcePath: "/workspace",
+    evidence: ["Cloud Run environment detected"],
+  },
+  areas: [],
+  drift: [],
+  agentOperatingModel: {
+    agents: [],
+    routes: [],
+    timeline: [],
+  },
+  launchPacket: "Continue with evidence-backed tasks.",
+};
 
 describe("normalizeAnalogyResponse", () => {
   it("turns structured Gemini modules into renderable explanation text", () => {
@@ -97,5 +162,25 @@ describe("normalizeAnalogyResponse", () => {
     expect(normalized.explanation).toContain("主张: React 是当前项目已检测到的技术栈组成部分。");
     expect(normalized.explanation).toContain("证据: 检测到 React 依赖");
     expect(normalized.explanation).not.toContain("No explanation generated.");
+  });
+
+  it("localizes fallback vocabulary job, role, and evidence fields", () => {
+    const zh = getFallbackAnalogy(fallbackReport, "boss", "human body", "zh-CN");
+    const zhReact = zh.vocabulary.find((row) => row.term === "React");
+    expect(zhReact).toMatchObject({
+      job: expect.stringContaining("浏览器界面"),
+      role: expect.stringContaining("人体"),
+      evidence: expect.stringContaining("前端技术栈检测结果"),
+    });
+    expect(zhReact?.job).not.toContain("Creates interactive");
+
+    const ja = getFallbackAnalogy(fallbackReport, "designer", "house", "ja");
+    const jaGit = ja.vocabulary.find((row) => row.term === "Git");
+    expect(jaGit).toMatchObject({
+      job: expect.stringContaining("ファイル変更"),
+      role: expect.stringContaining("家"),
+      evidence: expect.stringContaining("コミットあり"),
+    });
+    expect(jaGit?.evidence).not.toContain("has commits");
   });
 });
