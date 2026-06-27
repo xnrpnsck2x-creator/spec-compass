@@ -1,0 +1,93 @@
+{
+  "translationReviewedBy": "gemini",
+  "translationReviewedAt": "2026-06-27T05:11:44.237Z",
+  "app": {
+    "title": "Spec Compass",
+    "runScan": "Run Scan",
+    "generating": "Generating...",
+    "generate": "Generate Explanation",
+    "projectSelector": "Select Project",
+    "language": "Language",
+    "scanPathLabel": "Workspace Scan Path",
+    "scanPathPlaceholder": "Leave blank for server workspace..."
+  },
+  "status": {
+    "configured": "Configured",
+    "fallback": "Demo Fallback",
+    "missing": "Missing Key",
+    "gemini": "Gemini API Status",
+    "translation": "Translation Status",
+    "reviewed": "Reviewed",
+    "unverified": "Unverified",
+    "deploy": "Deploy Readiness",
+    "localOnly": "Local Only",
+    "cloudReady": "Cloud Run Ready",
+    "deployed": "Deployed",
+    "blocked": "Blocked",
+    "lastScanned": "Last scanned: {{time}}"
+  },
+  "sections": {
+    "overview": "Overview",
+    "projectScan": "Project Scan",
+    "analogy": "Analogy View",
+    "evidence": "Evidence Workspace",
+    "launchPacket": "Launch Packet",
+    "aiTeam": "AI Team Map",
+    "deployPanel": "Deploy Panel"
+  },
+  "scan": {
+    "healthCheck": "Project Health Check",
+    "techStack": "Technology Stack",
+    "files": "Files Count",
+    "lines": "Lines of Code",
+    "languages": "Language Mix",
+    "gitStatus": "Git Status",
+    "gaps": "Identified Gaps & Risks",
+    "nextActions": "Recommended Next Actions",
+    "productCompletion": "Product Completion",
+    "engineeringCompletion": "Engineering Completion",
+    "evidenceConfidence": "Evidence Confidence",
+    "branch": "Branch",
+    "clean": "Clean",
+    "dirty": "Dirty ({{count}} changes)",
+    "noCommits": "No commits yet",
+    "latestCommit": "Latest Commit",
+    "evidenceRequired": "Show Evidence",
+    "verified": "Verified",
+    "warning": "Warning",
+    "blocked": "Blocked"
+  },
+  "analogy": {
+    "identity": "Select Target Audience",
+    "identityLabel": "Explain to...",
+    "style": "Select Metaphor Theme",
+    "styleLabel": "Use metaphor...",
+    "diagram": "System Blueprint",
+    "vocabulary": "Vocabulary Translation Layer",
+    "term": "Technical Term",
+    "job": "Plain-Language Job",
+    "role": "Analogy Role",
+    "evidence": "Source Evidence",
+    "plainView": "Plain View",
+    "analogyView": "Analogy View",
+    "technicalView": "Technical View"
+  },
+  "launch": {
+    "agentHandoff": "Agent Handoff Start Prompt",
+    "rules": "Supervision Rules",
+    "taskList": "Next-Round Task List",
+    "drift": "Forbidden Drift Items",
+    "standards": "Completion Standards & Verification",
+    "copy": "Copy Start Prompt",
+    "copied": "Start Prompt copied to clipboard!"
+  },
+  "deploy": {
+    "panelTitle": "Deployment & Hackathon Submission",
+    "healthStatus": "Health Check Status",
+    "readiness": "Cloud Run Deployment Contract",
+    "verifications": "Verification Checklist",
+    "apiPort": "Listening on PORT environment variable",
+    "noLocal": "Cloud scan accepts zip/Git (Local path scanner disabled on Cloud Run)",
+    "deployUrl": "Deployment URL"
+  }
+}

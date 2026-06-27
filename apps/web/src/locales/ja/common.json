@@ -1,0 +1,93 @@
+{
+  "translationReviewedBy": "gemini",
+  "translationReviewedAt": "2026-06-27T05:12:05.406Z",
+  "app": {
+    "title": "Spec Compass (スペックコンパス)",
+    "runScan": "スキャン実行",
+    "generating": "生成中...",
+    "generate": "類比を生成",
+    "projectSelector": "プロジェクト選択",
+    "language": "言語",
+    "scanPathLabel": "ワークスペーススキャンパス",
+    "scanPathPlaceholder": "空欄ならサーバー作業区をスキャン..."
+  },
+  "status": {
+    "configured": "設定済",
+    "fallback": "デモ代替",
+    "missing": "キー欠損",
+    "gemini": "Gemini APIステータス",
+    "translation": "翻訳ステータス",
+    "reviewed": "レビュー済",
+    "unverified": "未検証",
+    "deploy": "デプロイ準備",
+    "localOnly": "ローカルのみ",
+    "cloudReady": "Cloud Run対応",
+    "deployed": "デプロイ済",
+    "blocked": "ブロック中",
+    "lastScanned": "最終スキャン: {{time}}"
+  },
+  "sections": {
+    "overview": "概要",
+    "projectScan": "プロジェクト体検",
+    "analogy": "類比解釈 (アナロジー)",
+    "evidence": "根拠ワークスペース",
+    "launchPacket": "開工包 (ローンチパケット)",
+    "aiTeam": "AIチームマップ",
+    "deployPanel": "デプロイパネル"
+  },
+  "scan": {
+    "healthCheck": "プロジェクト健康状態",
+    "techStack": "技術スタック",
+    "files": "ファイル数",
+    "lines": "コード行数",
+    "languages": "言語比率",
+    "gitStatus": "Gitステータス",
+    "gaps": "検出されたリスク・ギャップ",
+    "nextActions": "推奨される次アクション",
+    "productCompletion": "プロダクト完成度",
+    "engineeringCompletion": "エンジニアリング完成度",
+    "evidenceConfidence": "証拠信頼度",
+    "branch": "ブランチ",
+    "clean": "クリーン",
+    "dirty": "変更あり ({{count}} 件)",
+    "noCommits": "コミットなし",
+    "latestCommit": "最新コミット",
+    "evidenceRequired": "証拠を表示",
+    "verified": "検証済",
+    "warning": "警告",
+    "blocked": "ブロック"
+  },
+  "analogy": {
+    "identity": "ターゲット読者の選択",
+    "identityLabel": "説明対象...",
+    "style": "比喩テーマの選択",
+    "styleLabel": "比喩の選択...",
+    "diagram": "システム設計図",
+    "vocabulary": "専門用語翻訳レイヤー",
+    "term": "技術用語",
+    "job": "一般的な役割",
+    "role": "比喩内の役割",
+    "evidence": "ソース根拠",
+    "plainView": "通常表示",
+    "analogyView": "比喩表示",
+    "technicalView": "技術表示"
+  },
+  "launch": {
+    "agentHandoff": "エージェント引き継ぎ開始プロンプト",
+    "rules": "監視ルール",
+    "taskList": "次回タスク一覧",
+    "drift": "禁止事項",
+    "standards": "完了基準と検証",
+    "copy": "プロンプトをコピー",
+    "copied": "開始プロンプトをクリップボードにコピーしました！"
+  },
+  "deploy": {
+    "panelTitle": "デプロイおよびハッカソン提出",
+    "healthStatus": "ヘルスチェックステータス",
+    "readiness": "Cloud Run デプロイ契約",
+    "verifications": "検証チェックリスト",
+    "apiPort": "PORT環境変数で待機中",
+    "noLocal": "クラウドスキャンはzip/Gitのみ受け付けます（ローカルパススキャナーはCloud Run上で無効化されます）",
+    "deployUrl": "デプロイURL"
+  }
+}

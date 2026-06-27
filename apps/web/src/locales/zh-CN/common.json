@@ -1,0 +1,93 @@
+{
+  "translationReviewedBy": "gemini",
+  "translationReviewedAt": "2026-06-27T05:12:22.122Z",
+  "app": {
+    "title": "Spec Compass (规范罗盘)",
+    "runScan": "运行体检",
+    "generating": "生成中...",
+    "generate": "生成类比",
+    "projectSelector": "选择项目",
+    "language": "语言",
+    "scanPathLabel": "工作区扫描路径",
+    "scanPathPlaceholder": "留空则扫描服务器工作区..."
+  },
+  "status": {
+    "configured": "已配置",
+    "fallback": "演示备用",
+    "missing": "密钥缺失",
+    "gemini": "Gemini API 状态",
+    "translation": "翻译状态",
+    "reviewed": "已审核",
+    "unverified": "未审核",
+    "deploy": "部署准备",
+    "localOnly": "仅限本地",
+    "cloudReady": "Cloud Run 就绪",
+    "deployed": "已部署",
+    "blocked": "已受阻",
+    "lastScanned": "最后扫描时间: {{time}}"
+  },
+  "sections": {
+    "overview": "概览",
+    "projectScan": "项目体检",
+    "analogy": "类比解释",
+    "evidence": "凭证工作区",
+    "launchPacket": "开工包",
+    "aiTeam": "AI 团队看板",
+    "deployPanel": "部署看板"
+  },
+  "scan": {
+    "healthCheck": "项目健康体检",
+    "techStack": "技术栈",
+    "files": "文件数量",
+    "lines": "代码行数",
+    "languages": "语言占比",
+    "gitStatus": "Git 状态",
+    "gaps": "发现的风险与差距",
+    "nextActions": "推荐的下一步行动",
+    "productCompletion": "产品完成度",
+    "engineeringCompletion": "工程完成度",
+    "evidenceConfidence": "凭证置信度",
+    "branch": "分支",
+    "clean": "干净",
+    "dirty": "有未提交改动 ({{count}} 处)",
+    "noCommits": "尚无提交记录",
+    "latestCommit": "最新提交",
+    "evidenceRequired": "查看事实凭证",
+    "verified": "已验证",
+    "warning": "警告",
+    "blocked": "受阻"
+  },
+  "analogy": {
+    "identity": "选择目标受众",
+    "identityLabel": "向谁解释...",
+    "style": "选择比喻主题",
+    "styleLabel": "使用比喻...",
+    "diagram": "系统蓝图设计",
+    "vocabulary": "专业词汇翻译层",
+    "term": "技术术语",
+    "job": "通俗职责说明",
+    "role": "比喻中的角色",
+    "evidence": "源码凭证",
+    "plainView": "普通文本",
+    "analogyView": "比喻解释",
+    "technicalView": "技术视图"
+  },
+  "launch": {
+    "agentHandoff": "编码代理交接提示词",
+    "rules": "监督规则",
+    "taskList": "下一轮任务清单",
+    "drift": "禁止漂移事项",
+    "standards": "验收标准与验证方法",
+    "copy": "一键复制提示词",
+    "copied": "开工包提示词已复制到剪贴板！"
+  },
+  "deploy": {
+    "panelTitle": "部署与黑客松提交",
+    "healthStatus": "健康检查状态",
+    "readiness": "Cloud Run 部署契约",
+    "verifications": "验证检查单",
+    "apiPort": "正在监听 PORT 环境变量",
+    "noLocal": "云端扫描仅支持 zip/Git 链接（Cloud Run 禁用本地路径扫描）",
+    "deployUrl": "部署 URL"
+  }
+}

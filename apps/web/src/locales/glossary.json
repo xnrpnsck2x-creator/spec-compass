@@ -1,0 +1,26 @@
+{
+  "framework": {
+    "en": "framework",
+    "ja": "フレームワーク",
+    "zh-CN": "框架",
+    "note": "A reusable structure for building software. Do not replace with brand names."
+  },
+  "launchPacket": {
+    "en": "Launch Packet",
+    "ja": "ローンチパケット",
+    "zh-CN": "启动包",
+    "note": "Copyable instruction packet for coding agents."
+  },
+  "evidence": {
+    "en": "evidence",
+    "ja": "証拠",
+    "zh-CN": "证据",
+    "note": "Documented scanner outputs proving engineering progress."
+  },
+  "scanner": {
+    "en": "scanner",
+    "ja": "スキャナー",
+    "zh-CN": "扫描器",
+    "note": "Deterministic filesystem analyzer."
+  }
+}

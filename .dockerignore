@@ -1,0 +1,14 @@
+node_modules/
+dist/
+apps/*/dist/
+packages/*/dist/
+coverage/
+.git/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+work/
+app_build/
+production_artifacts/
