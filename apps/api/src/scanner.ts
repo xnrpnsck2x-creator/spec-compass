@@ -20,6 +20,31 @@ export interface ScanSourceInfo {
   warnings: string[];
 }
 
+function readOptionalEnv(name: string): string | null {
+  const value = process.env[name]?.trim();
+  return value ? value : null;
+}
+
+function readDeploymentGitMetadata(): {
+  branch: string | null;
+  latestCommit: string | null;
+  repositoryUrl: string | null;
+} | null {
+  const branch = readOptionalEnv("SPEC_COMPASS_GIT_BRANCH") || readOptionalEnv("BRANCH_NAME");
+  const latestCommit = readOptionalEnv("SPEC_COMPASS_GIT_COMMIT") || readOptionalEnv("COMMIT_SHA");
+  const repositoryUrl = readOptionalEnv("SPEC_COMPASS_GIT_REPOSITORY") || readOptionalEnv("REPOSITORY_URL");
+
+  if (!branch && !latestCommit && !repositoryUrl) {
+    return null;
+  }
+
+  return {
+    branch,
+    latestCommit,
+    repositoryUrl,
+  };
+}
+
 // Helper to recursively walk a directory and collect file info
 async function walkDir(dir: string, baseDir: string, filesList: FileInfo[] = []): Promise<FileInfo[]> {
   let files: string[];
@@ -225,12 +250,14 @@ export async function runScan(targetPath: string, sourceInfo?: Partial<ScanSourc
   let latestCommit: string | null = null;
   let isDirty = false;
   let untrackedCount = 0;
+  let gitSource: "filesystem" | "deployment" | "missing" = "missing";
   const statusSummary: string[] = [];
   const gitEvidence: string[] = [];
 
   try {
     isRepository = fs.existsSync(path.join(absolutePath, ".git"));
     if (isRepository) {
+      gitSource = "filesystem";
       // Branch name
       const branchBuf = execSync("git branch --show-current", { cwd: absolutePath });
       branch = branchBuf.toString().trim() || "main";
@@ -266,6 +293,22 @@ export async function runScan(targetPath: string, sourceInfo?: Partial<ScanSourc
             untrackedCount++;
           }
         }
+      }
+    } else {
+      const deploymentGit = readDeploymentGitMetadata();
+      if (deploymentGit) {
+        gitSource = "deployment";
+        isRepository = true;
+        branch = deploymentGit.branch || "deployed";
+        latestCommit = deploymentGit.latestCommit;
+        hasCommits = Boolean(latestCommit);
+        gitEvidence.push("Git metadata source: deployment environment");
+        gitEvidence.push(`SPEC_COMPASS_GIT_BRANCH: ${deploymentGit.branch || "missing"}`);
+        gitEvidence.push(`SPEC_COMPASS_GIT_COMMIT: ${deploymentGit.latestCommit || "missing"}`);
+        if (deploymentGit.repositoryUrl) {
+          gitEvidence.push(`SPEC_COMPASS_GIT_REPOSITORY: ${deploymentGit.repositoryUrl}`);
+        }
+        gitEvidence.push("Working tree status unavailable in immutable deployment runtime");
       }
     }
   } catch (err: any) {
@@ -323,7 +366,7 @@ export async function runScan(targetPath: string, sourceInfo?: Partial<ScanSourc
     gaps.push("Project is not initialized with Git");
   } else if (!hasCommits) {
     productScore -= 15;
-    gaps.push("No commits exist on main branch");
+    gaps.push(gitSource === "deployment" ? "Deployment Git metadata does not include a commit hash" : "No commits exist on main branch");
   }
   if (testsMissing) {
     productScore -= 10;
@@ -439,10 +482,18 @@ export async function runScan(targetPath: string, sourceInfo?: Partial<ScanSourc
       score: isRepository ? (hasCommits ? 100 : 50) : 0,
       status: (isRepository ? (hasCommits ? "verified" : "partial") : "missing") as any,
       evidence: isRepository
-        ? [`Git repository detected`, `Current branch is '${branch}'`, hasCommits ? "HEAD has commits" : "No commits present yet"]
+        ? [
+            gitSource === "deployment" ? "Git baseline detected from deployment metadata" : "Git repository detected on filesystem",
+            `Current branch is '${branch}'`,
+            hasCommits ? `Latest commit: ${latestCommit || "present"}` : "No commit hash present yet",
+          ]
         : ["No git history found"],
-      gaps: isRepository ? (hasCommits ? [] : ["No initial commit has been made yet"]) : ["Run git init"],
-      nextActions: isRepository ? (hasCommits ? ["Keep changes minimal"] : ["Make first git commit on main"]) : ["Initialize git repository"],
+      gaps: isRepository
+        ? (hasCommits ? [] : [gitSource === "deployment" ? "Inject SPEC_COMPASS_GIT_COMMIT during deploy" : "No initial commit has been made yet"])
+        : ["Run git init"],
+      nextActions: isRepository
+        ? (hasCommits ? [gitSource === "deployment" ? "Keep deploy Git metadata updated" : "Keep changes minimal"] : ["Make first git commit on main"])
+        : ["Initialize git repository"],
     },
     {
       name: "Quality Assurance (Tests)",

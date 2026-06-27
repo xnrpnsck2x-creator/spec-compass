@@ -43,6 +43,12 @@ The repository includes a `Dockerfile`, so Cloud Build can build the container f
 The runtime image also includes a read-only source snapshot at `/workspace-source`.
 Cloud Run sets `SPEC_COMPASS_SCAN_PATH=/workspace-source` so the hosted demo scans the actual project source instead of only built runtime artifacts.
 
+Cloud Run source deploys do not include the `.git` directory in the runtime source snapshot. To keep Project Scan from mislabeling a deployed, committed project as `Git Version Control: Missing`, set these runtime environment variables during deploy:
+
+- `SPEC_COMPASS_GIT_BRANCH`: current branch, for example `main`.
+- `SPEC_COMPASS_GIT_COMMIT`: current commit SHA or short SHA.
+- `SPEC_COMPASS_GIT_REPOSITORY`: public repository URL.
+
 ## Current Deployment
 
 - Project: `paslap`

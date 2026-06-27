@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { runScan } from "./scanner.js";
 
 const tempRoots: string[] = [];
+const gitMetadataEnvKeys = ["SPEC_COMPASS_GIT_BRANCH", "SPEC_COMPASS_GIT_COMMIT", "SPEC_COMPASS_GIT_REPOSITORY"];
 
 async function createFixtureProject(): Promise<string> {
   const root = await mkdtemp(path.join(os.tmpdir(), "spec-compass-scan-"));
@@ -45,6 +46,9 @@ async function createFixtureProject(): Promise<string> {
 }
 
 afterEach(async () => {
+  for (const key of gitMetadataEnvKeys) {
+    delete process.env[key];
+  }
   await Promise.all(tempRoots.splice(0).map((root) => rm(root, { recursive: true, force: true })));
 });
 
@@ -82,5 +86,29 @@ describe("runScan", () => {
       "Gemini API integration is running in fallback mode",
     );
     expect(report.drift).toEqual([]);
+  });
+
+  it("uses deployment git metadata when .git is not available in the runtime source copy", async () => {
+    const root = await createFixtureProject();
+    process.env.SPEC_COMPASS_GIT_BRANCH = "main";
+    process.env.SPEC_COMPASS_GIT_COMMIT = "48a4303";
+    process.env.SPEC_COMPASS_GIT_REPOSITORY = "https://github.com/xnrpnsck2x-creator/spec-compass";
+
+    const report = await runScan(root);
+    const gitArea = report.areas.find((area) => area.name === "Git Version Control");
+
+    expect(report.git).toMatchObject({
+      isRepository: true,
+      branch: "main",
+      hasCommits: true,
+      latestCommit: "48a4303",
+      isDirty: false,
+      untrackedCount: 0,
+    });
+    expect(report.git.evidence.join("\n")).toContain("Git metadata source: deployment environment");
+    expect(gitArea?.score).toBe(100);
+    expect(gitArea?.status).toBe("verified");
+    expect(gitArea?.evidence.join("\n")).toContain("Git baseline detected from deployment metadata");
+    expect(gitArea?.nextActions).toContain("Keep deploy Git metadata updated");
   });
 });
