@@ -1961,6 +1961,7 @@ export default function App() {
                   projectReady={projectReady}
                   topGaps={topGaps}
                   nextActions={nextActions}
+                  setSelectedTab={setSelectedTab}
                   openEvidence={openEvidence}
                 />
               )}
@@ -2075,6 +2076,7 @@ function OverviewPanel({
   projectReady,
   topGaps,
   nextActions,
+  setSelectedTab,
   openEvidence,
 }: {
   copy: typeof localeCopy.en;
@@ -2086,6 +2088,7 @@ function OverviewPanel({
   projectReady: boolean;
   topGaps: Array<{ area: string; gap: string }>;
   nextActions: Array<{ area: string; action: string }>;
+  setSelectedTab: (tab: TabKey) => void;
   openEvidence: (title: string, evidence: string[]) => void;
 }) {
   const qaArea = getArea(report, "Quality Assurance (Tests)");
@@ -2174,20 +2177,49 @@ function OverviewPanel({
                     icon: <SearchIcon color="primary" />,
                     title: copy.demoCards[0].title,
                     body: copy.demoCards[0].body,
+                    tab: "scan" as const,
                   },
                   {
                     icon: <PsychologyIcon sx={{ color: "#9334E6" }} />,
                     title: copy.demoCards[1].title,
                     body: copy.demoCards[1].body,
+                    tab: "analogy" as const,
                   },
                   {
                     icon: <FolderZipIcon color="success" />,
                     title: copy.demoCards[2].title,
                     body: copy.demoCards[2].body,
+                    tab: "launch" as const,
                   },
                 ].map((item) => (
                   <Grid item xs={12} md={4} key={item.title}>
-                    <Paper elevation={0} sx={{ p: 2, height: "100%", border: "1px solid #DADCE0" }}>
+                    <Paper
+                      component="button"
+                      type="button"
+                      elevation={0}
+                      onClick={() => setSelectedTab(item.tab)}
+                      aria-label={item.title}
+                      sx={{
+                        p: 2,
+                        width: "100%",
+                        height: "100%",
+                        border: "1px solid #DADCE0",
+                        bgcolor: "background.paper",
+                        color: "text.primary",
+                        cursor: "pointer",
+                        textAlign: "left",
+                        font: "inherit",
+                        transition: "border-color 120ms ease, background-color 120ms ease, box-shadow 120ms ease",
+                        "&:hover": {
+                          borderColor: "#1A73E8",
+                          bgcolor: "#F8FAFD",
+                        },
+                        "&:focus-visible": {
+                          outline: "3px solid #AECBFA",
+                          outlineOffset: 2,
+                        },
+                      }}
+                    >
                       <Stack spacing={1}>
                         {item.icon}
                         <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
