@@ -48,20 +48,21 @@ Cloud Run sets `SPEC_COMPASS_SCAN_PATH=/workspace-source` so the hosted demo sca
 - Project: `paslap`
 - Region: `asia-northeast1`
 - Service: `spec-compass`
-- Ready revision: `spec-compass-00011-2mm`
 - Service URL: `https://spec-compass-g3pfpanwsq-an.a.run.app`
 - Public URL from deploy output: `https://spec-compass-954554519801.asia-northeast1.run.app`
+
+Use `/api/health` for the current live revision and deterministic deployment evidence.
 
 Verified checks:
 
 - `GET /api/health` returned `status: "ok"`, `geminiConfigured: true`, and `deployment.verified: true`.
 - Default `POST /api/scan` returned 57 files, 13890 lines, stack evidence, and Cloud Run runtime evidence.
 - GitHub URL `POST /api/scan` accepted `https://github.com/octocat/Hello-World` and returned source `octocat/Hello-World#master`.
-- Scan report deployment evidence includes service `spec-compass`, revision `spec-compass-00011-2mm`, region `asia-northeast1`, URL `https://spec-compass-g3pfpanwsq-an.a.run.app`, and source path `/workspace-source`.
+- Scan report deployment evidence includes service `spec-compass`, current revision, region `asia-northeast1`, URL `https://spec-compass-g3pfpanwsq-an.a.run.app`, and source path `/workspace-source`.
 - `POST /api/generate-explanation` returned HTTP 200 with Gemini-backed explanation, diagram, and 10 vocabulary rows.
 - `POST /api/translate-copy` returned HTTP 200 with `status: "reviewed"` and `reviewedBy: "gemini"`.
 - Browser verification confirmed GitHub source mode, GitHub URL scan flow, visible source `octocat/Hello-World#master`, and no console errors.
-- Browser verification confirmed the ordinary-user `老板 + 人体` analogy flow on revision `spec-compass-00011-2mm`: generated SVG image, localized Chinese explanation, vocabulary layer, Launch Packet revision evidence, and no console/page errors.
+- Browser verification confirmed the ordinary-user `老板 + 人体` analogy flow: generated SVG image, localized Chinese explanation, vocabulary layer, Launch Packet revision evidence, and no console/page errors.
 - Production dependency audit returned 0 vulnerabilities after upgrading Fastify and `@fastify/static`.
 
 ## Gemini configuration
