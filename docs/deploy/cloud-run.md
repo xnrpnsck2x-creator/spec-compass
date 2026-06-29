@@ -49,7 +49,7 @@ Cloud Run source deploys do not include the `.git` directory in the runtime sour
 - `SPEC_COMPASS_GIT_COMMIT`: current commit SHA or short SHA.
 - `SPEC_COMPASS_GIT_REPOSITORY`: public repository URL.
 
-## Current Deployment
+## Retired Deployment
 
 - Project: `paslap`
 - Region: `asia-northeast1`
@@ -57,9 +57,17 @@ Cloud Run source deploys do not include the `.git` directory in the runtime sour
 - Service URL: `https://spec-compass-g3pfpanwsq-an.a.run.app`
 - Public URL from deploy output: `https://spec-compass-954554519801.asia-northeast1.run.app`
 
-Use `/api/health` for the current live revision and deterministic deployment evidence.
+Status: deleted on 2026-06-29 after the hackathon submission was complete.
 
-Verified checks:
+Deleted cleanup scope:
+
+- Cloud Run service `spec-compass` in `asia-northeast1`.
+- Artifact Registry repository `cloud-run-source-deploy` in `asia-northeast1`; it contained only the `spec-compass` package.
+- Cloud Storage bucket `run-sources-paslap-asia-northeast1`; it contained only Cloud Run source zips under `services/spec-compass/`.
+
+Do not assume the URLs above are live. Redeploy intentionally before using `/api/health` again.
+
+Historical verified checks before deletion:
 
 - `GET /api/health` returned `status: "ok"`, `geminiConfigured: true`, and `deployment.verified: true`.
 - Default `POST /api/scan` returned 57 files, 13890 lines, stack evidence, and Cloud Run runtime evidence.
